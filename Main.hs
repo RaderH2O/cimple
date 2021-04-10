@@ -12,19 +12,6 @@ data Tok = CNum Int | CVar String | CBool Bool | CString String | CPrint Tok | C
 fromJust :: Maybe a -> a
 fromJust (Just a) = a
 
-fromIndex :: Int -> [a] -> [a]
-fromIndex _ [] = []
-fromIndex 0 a = a
-fromIndex n (x:xs)
-    | n > 0     = fromIndex (n - 1) xs
-    | otherwise = xs
-
-untilIndex :: Int -> [a] -> [a]
-untilIndex _ [] = []
-untilIndex n (x:xs)
-    | n > 0     = x : untilIndex (n-1) xs
-    | otherwise = []
-
 digit :: P.ReadP Char
 digit = P.choice [
                 P.char '1', P.char '2', P.char '3',
