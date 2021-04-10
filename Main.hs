@@ -79,12 +79,16 @@ execC (tok:toks) vars = case tok of
     (CNum n)        -> execC toks vars
     (CString s)     -> execC toks vars
     (CVar n)        -> case toks of
-                            (CEquals:val:toks') -> execC (toks') ((n, val) : vars)
-                            _                   -> execC toks vars
+                            (CEquals:CEquals:a) -> fail "Can't use equal sign right after an equal sign"
+                            (CEquals:val:toks') -> execC toks' ((n, val) : vars)
+                            _                   -> fail "Unexpected syntax"
   where f :: Tok -> String
         f (CNum n)      = show n
         f (CString n)   =      n
-        f (CVar n)      = f $ fromJust $ lookup n vars
+        f (CVar n)
+            | (lookup n vars) == Nothing    = error ("Variable \"" ++ n ++ "\" is not defined")
+            | otherwise                     = f $ fromJust $ lookup n vars
+        f a             = fail ("You can't print " ++ show a)
 
 prompt :: String -> IO ()
 prompt text = do
